@@ -260,6 +260,7 @@
         }
 
         .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(212, 165, 165, 0.4); }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .contact-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -287,7 +288,6 @@
 
         footer p { color: #8b8b95; font-size: 14px; }
 
-        /* ===== مودال (با اسکرول درست شده) ===== */
         .modal {
             display: none; position: fixed; top: 0; left: 0;
             width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9);
@@ -518,6 +518,22 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
+        .loading-spinner {
+            text-align: center; padding: 40px; color: #8b8b95;
+        }
+
+        .loading-spinner::after {
+            content: '⏳';
+            font-size: 40px;
+            display: block;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .hero h1 { font-size: 30px; }
             .hero p { font-size: 15px; }
@@ -673,7 +689,7 @@
                 <textarea id="orderNotes" placeholder="مثلاً: رنگ خاص، اندازه خاص و..."></textarea>
             </div>
 
-            <button class="submit-btn" onclick="submitOrder()">🎂 ثبت سفارش</button>
+            <button class="submit-btn" id="submitBtn" onclick="submitOrder()">🎂 ثبت سفارش</button>
         </div>
     </section>
 
@@ -777,15 +793,53 @@
     </div>
 
     <script>
-        const ADMIN_CODE = "am22445870";
+        // ========== تنظیمات ==========
+        const ADMIN_CODE = "aam22445870";
         const INSTAGRAM_URL = "https://www.instagram.com/mercia_sweets";
+        
+        // ========== JSONBin.io ==========
+        const JSONBIN_BIN_ID = "6aa410b7ac6210605ac0e084";
+        const JSONBIN_MASTER_KEY = "$2a$10$koq/e6LmekVDasbpuA0hEOPK9FACrRgL/7I.6tROf7iThXrMnrf8u";
+        const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
-        let orders = JSON.parse(localStorage.getItem('mercia_orders') || '[]');
-
-        function saveOrders() {
-            localStorage.setItem('mercia_orders', JSON.stringify(orders));
+        // ========== دیتابیس ابری ==========
+        async function loadOrders() {
+            try {
+                const response = await fetch(`${JSONBIN_URL}/latest`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': JSONBIN_MASTER_KEY,
+                        'X-Bin-Meta': 'false'
+                    }
+                });
+                const data = await response.json();
+                return data.orders || [];
+            } catch (error) {
+                console.error('خطا در بارگذاری:', error);
+                showNotif('❌ خطا در بارگذاری سفارش‌ها', 'error');
+                return [];
+            }
         }
 
+        async function saveOrders(orders) {
+            try {
+                const response = await fetch(JSONBIN_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_MASTER_KEY
+                    },
+                    body: JSON.stringify({ orders: orders })
+                });
+                return response.ok;
+            } catch (error) {
+                console.error('خطا در ذخیره:', error);
+                showNotif('❌ خطا در ذخیره سفارش', 'error');
+                return false;
+            }
+        }
+
+        // ========== نوتیفیکیشن ==========
         function showNotif(msg, type = 'success') {
             const n = document.getElementById('notification');
             n.textContent = msg;
@@ -793,6 +847,7 @@
             setTimeout(() => n.classList.remove('show'), 3500);
         }
 
+        // ========== نمایش عکس بزرگ ==========
         function viewImage(src) {
             document.getElementById('viewerImage').src = src;
             document.getElementById('imageViewer').classList.add('active');
@@ -804,6 +859,7 @@
             document.body.style.overflow = '';
         }
 
+        // ========== پیش‌نمایش عکس ==========
         function previewImage(input) {
             const preview = document.getElementById('imagePreview');
             const fileName = document.getElementById('fileName');
@@ -819,7 +875,8 @@
             }
         }
 
-        function submitOrder() {
+        // ========== ثبت سفارش ==========
+        async function submitOrder() {
             const name = document.getElementById('orderName').value.trim();
             const phone = document.getElementById('orderPhone').value.trim();
             const address = document.getElementById('orderAddress').value.trim();
@@ -833,8 +890,12 @@
                 return;
             }
 
-            const process = (imageData) => {
-                const order = {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ در حال ارسال...';
+
+            const process = async (imageData) => {
+                const newOrder = {
                     id: Date.now(),
                     code: String(Math.floor(1000 + Math.random() * 9000)),
                     name: name,
@@ -851,24 +912,33 @@
                     createdAt: new Date().toLocaleString('fa-IR')
                 };
 
-                orders.push(order);
-                saveOrders();
-
-                showNotif('✅ سفارش ثبت شد! کد رهگیری: ' + order.code, 'info');
+                // گرفتن سفارش‌های قبلی از سرور
+                const currentOrders = await loadOrders();
+                currentOrders.push(newOrder);
                 
-                document.getElementById('orderName').value = '';
-                document.getElementById('orderPhone').value = '';
-                document.getElementById('orderAddress').value = '';
-                document.getElementById('orderCakeDesc').value = '';
-                document.getElementById('orderFilling').value = '';
-                document.getElementById('orderNotes').value = '';
-                document.getElementById('orderImage').value = '';
-                document.getElementById('imagePreview').style.display = 'none';
-                document.getElementById('fileName').textContent = 'برای انتخاب عکس کلیک کن';
+                // ذخیره توی سرور
+                const success = await saveOrders(currentOrders);
+                
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🎂 ثبت سفارش';
 
-                setTimeout(() => {
-                    alert('✅ سفارش شما با موفقیت ثبت شد!\n\n📋 کد رهگیری: ' + order.code + '\n\nاین کد را برای پیگیری سفارش نگه دارید.');
-                }, 500);
+                if (success) {
+                    showNotif('✅ سفارش ثبت شد! کد: ' + newOrder.code, 'info');
+                    
+                    document.getElementById('orderName').value = '';
+                    document.getElementById('orderPhone').value = '';
+                    document.getElementById('orderAddress').value = '';
+                    document.getElementById('orderCakeDesc').value = '';
+                    document.getElementById('orderFilling').value = '';
+                    document.getElementById('orderNotes').value = '';
+                    document.getElementById('orderImage').value = '';
+                    document.getElementById('imagePreview').style.display = 'none';
+                    document.getElementById('fileName').textContent = 'برای انتخاب عکس کلیک کن';
+
+                    setTimeout(() => {
+                        alert('✅ سفارش شما با موفقیت ثبت شد!\n\n📋 کد رهگیری: ' + newOrder.code + '\n\nاین کد را برای پیگیری سفارش نگه دارید.');
+                    }, 500);
+                }
             };
 
             if (imageInput.files && imageInput.files[0]) {
@@ -880,7 +950,8 @@
             }
         }
 
-        function trackOrder() {
+        // ========== پیگیری سفارش ==========
+        async function trackOrder() {
             const code = document.getElementById('trackCode').value.trim();
             const resultDiv = document.getElementById('trackResult');
 
@@ -889,6 +960,9 @@
                 return;
             }
 
+            resultDiv.innerHTML = '<div class="loading-spinner">در حال جستجو...</div>';
+
+            const orders = await loadOrders();
             const order = orders.find(o => o.code === code);
 
             if (!order) {
@@ -975,21 +1049,23 @@
             if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function showPayment(code) {
+        async function showPayment(code) {
+            const orders = await loadOrders();
             const order = orders.find(o => o.code === code);
             if (!order) return;
             document.getElementById('paymentAmount').textContent = order.price;
             openModal('paymentModal');
         }
 
-        function uploadReceipt(code, input) {
+        async function uploadReceipt(code, input) {
             if (!input.files || !input.files[0]) return;
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
+                const orders = await loadOrders();
                 const order = orders.find(o => o.code === code);
                 if (order) {
                     order.receipt = e.target.result;
-                    saveOrders();
+                    await saveOrders(orders);
                     showNotif('✅ رسید آپلود شد!', 'info');
                     trackOrder();
                 }
@@ -997,11 +1073,12 @@
             reader.readAsDataURL(input.files[0]);
         }
 
-        function sendMessage(code) {
+        async function sendMessage(code) {
             const input = document.getElementById('chatInput_' + code);
             const text = input.value.trim();
             if (!text) return;
 
+            const orders = await loadOrders();
             const order = orders.find(o => o.code === code);
             if (!order) return;
 
@@ -1010,11 +1087,12 @@
                 text: text,
                 time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })
             });
-            saveOrders();
+            await saveOrders(orders);
             input.value = '';
             trackOrder();
         }
 
+        // ========== پنل مدیریت ==========
         function openAdmin() {
             document.getElementById('loginSection').style.display = 'block';
             document.getElementById('ordersSection').style.display = 'none';
@@ -1027,14 +1105,17 @@
             if (code === ADMIN_CODE) {
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('ordersSection').style.display = 'block';
-                loadOrders();
+                loadAdminOrders();
             } else {
                 showNotif('❌ کد اشتباهه!', 'error');
             }
         }
 
-        function loadOrders() {
+        async function loadAdminOrders() {
             const list = document.getElementById('ordersList');
+            list.innerHTML = '<div class="loading-spinner">در حال بارگذاری...</div>';
+
+            const orders = await loadOrders();
             
             if (orders.length === 0) {
                 list.innerHTML = '<div style="text-align: center; color: #8b8b95; padding: 40px; font-size: 16px;">📭 هنوز سفارشی ثبت نشده!</div>';
@@ -1108,7 +1189,7 @@
             list.innerHTML = html;
         }
 
-        function setPrice(code) {
+        async function setPrice(code) {
             const input = document.getElementById('price_' + code);
             const price = input.value.trim();
             if (!price) {
@@ -1116,38 +1197,42 @@
                 return;
             }
             
+            const orders = await loadOrders();
             const order = orders.find(o => o.code === code);
             if (order) {
                 order.price = price;
-                saveOrders();
+                await saveOrders(orders);
                 showNotif('✅ قیمت ثبت شد: ' + price + ' تومان', 'info');
-                loadOrders();
+                loadAdminOrders();
             }
         }
 
-        function setStatus(code, status) {
+        async function setStatus(code, status) {
+            const orders = await loadOrders();
             const order = orders.find(o => o.code === code);
             if (order) {
                 order.status = status;
-                saveOrders();
+                await saveOrders(orders);
                 showNotif('✅ وضعیت تغییر کرد!', 'info');
-                loadOrders();
+                loadAdminOrders();
             }
         }
 
-        function deleteOrder(code) {
+        async function deleteOrder(code) {
             if (!confirm('مطمئنی می‌خوای این سفارش رو حذف کنی؟')) return;
-            orders = orders.filter(o => o.code !== code);
-            saveOrders();
-            loadOrders();
+            const orders = await loadOrders();
+            const filtered = orders.filter(o => o.code !== code);
+            await saveOrders(filtered);
+            loadAdminOrders();
             showNotif('🗑 سفارش حذف شد!', 'info');
         }
 
-        function sendAdminMsg(code) {
+        async function sendAdminMsg(code) {
             const input = document.getElementById('adminChatInput_' + code);
             const text = input.value.trim();
             if (!text) return;
 
+            const orders = await loadOrders();
             const order = orders.find(o => o.code === code);
             if (!order) return;
 
@@ -1156,11 +1241,12 @@
                 text: text,
                 time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })
             });
-            saveOrders();
+            await saveOrders(orders);
             input.value = '';
-            loadOrders();
+            loadAdminOrders();
         }
 
+        // ========== مودال ==========
         function openModal(id) {
             document.getElementById(id).classList.add('active');
         }
@@ -1177,6 +1263,7 @@
             });
         });
 
+        // ========== ذرات شناور ==========
         const emojis = ['🍰', '🎂', '🧁', '🍩', '🍪', '💝', '✨', '🌸'];
         function createParticle() {
             const p = document.createElement('div');
@@ -1197,4 +1284,4 @@
     </script>
 
 </body>
-</html>
+</html>ب
