@@ -812,11 +812,14 @@
                         'X-Bin-Meta': 'false'
                     }
                 });
+                if (!response.ok) {
+                    console.error('❌ Load error:', response.status);
+                    return [];
+                }
                 const data = await response.json();
                 return data.orders || [];
             } catch (error) {
-                console.error('خطا در بارگذاری:', error);
-                showNotif('❌ خطا در بارگذاری سفارش‌ها', 'error');
+                console.error('❌ خطا در بارگذاری:', error);
                 return [];
             }
         }
@@ -831,12 +834,49 @@
                     },
                     body: JSON.stringify({ orders: orders })
                 });
-                return response.ok;
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    console.error('❌ JSONBin Error:', response.status, errText);
+                    if (response.status === 413) {
+                        showNotif('❌ حجم داده زیاده! عکس رو کوچیک‌تر کن.', 'error');
+                    } else {
+                        showNotif('❌ خطای سرور: ' + response.status, 'error');
+                    }
+                    return false;
+                }
+                return true;
             } catch (error) {
-                console.error('خطا در ذخیره:', error);
-                showNotif('❌ خطا در ذخیره سفارش', 'error');
+                console.error('❌ Network Error:', error);
+                showNotif('❌ خطای شبکه: ' + error.message, 'error');
                 return false;
             }
+        }
+
+        // ========== فشرده‌سازی عکس ==========
+        function compressImage(file, maxWidth = 700, quality = 0.5) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width, h = img.height;
+                        if (w > maxWidth) {
+                            h = (maxWidth / w) * h;
+                            w = maxWidth;
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
         }
 
         // ========== نوتیفیکیشن ==========
@@ -844,7 +884,7 @@
             const n = document.getElementById('notification');
             n.textContent = msg;
             n.className = 'notification show ' + (type === 'error' ? 'error' : type === 'info' ? 'info' : '');
-            setTimeout(() => n.classList.remove('show'), 3500);
+            setTimeout(() => n.classList.remove('show'), 4000);
         }
 
         // ========== نمایش عکس بزرگ ==========
@@ -894,7 +934,15 @@
             submitBtn.disabled = true;
             submitBtn.textContent = '⏳ در حال ارسال...';
 
-            const process = async (imageData) => {
+            try {
+                // فشرده‌سازی عکس
+                let imageData = null;
+                if (imageInput.files && imageInput.files[0]) {
+                    submitBtn.textContent = '⏳ در حال فشرده‌سازی عکس...';
+                    imageData = await compressImage(imageInput.files[0], 700, 0.5);
+                    submitBtn.textContent = '⏳ در حال ارسال...';
+                }
+
                 const newOrder = {
                     id: Date.now(),
                     code: String(Math.floor(1000 + Math.random() * 9000)),
@@ -912,19 +960,13 @@
                     createdAt: new Date().toLocaleString('fa-IR')
                 };
 
-                // گرفتن سفارش‌های قبلی از سرور
                 const currentOrders = await loadOrders();
                 currentOrders.push(newOrder);
-                
-                // ذخیره توی سرور
                 const success = await saveOrders(currentOrders);
-                
-                submitBtn.disabled = false;
-                submitBtn.textContent = '🎂 ثبت سفارش';
 
                 if (success) {
                     showNotif('✅ سفارش ثبت شد! کد: ' + newOrder.code, 'info');
-                    
+
                     document.getElementById('orderName').value = '';
                     document.getElementById('orderPhone').value = '';
                     document.getElementById('orderAddress').value = '';
@@ -939,14 +981,12 @@
                         alert('✅ سفارش شما با موفقیت ثبت شد!\n\n📋 کد رهگیری: ' + newOrder.code + '\n\nاین کد را برای پیگیری سفارش نگه دارید.');
                     }, 500);
                 }
-            };
-
-            if (imageInput.files && imageInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => process(e.target.result);
-                reader.readAsDataURL(imageInput.files[0]);
-            } else {
-                process(null);
+            } catch (err) {
+                console.error('❌ خطا در ثبت سفارش:', err);
+                showNotif('❌ خطا: ' + err.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🎂 ثبت سفارش';
             }
         }
 
@@ -1059,18 +1099,20 @@
 
         async function uploadReceipt(code, input) {
             if (!input.files || !input.files[0]) return;
-            const reader = new FileReader();
-            reader.onload = async (e) => {
+            try {
+                const compressed = await compressImage(input.files[0], 700, 0.5);
                 const orders = await loadOrders();
                 const order = orders.find(o => o.code === code);
                 if (order) {
-                    order.receipt = e.target.result;
+                    order.receipt = compressed;
                     await saveOrders(orders);
                     showNotif('✅ رسید آپلود شد!', 'info');
                     trackOrder();
                 }
-            };
-            reader.readAsDataURL(input.files[0]);
+            } catch (err) {
+                console.error(err);
+                showNotif('❌ خطا در آپلود رسید', 'error');
+            }
         }
 
         async function sendMessage(code) {
@@ -1284,4 +1326,4 @@
     </script>
 
 </body>
-</html>ب
+</html>
