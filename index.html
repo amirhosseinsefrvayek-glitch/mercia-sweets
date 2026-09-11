@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرسیا سوئیتس | سفارش کیک خانگی</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tahoma', 'Segoe UI', sans-serif; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background: #0d0d12;
+            color: #e8e8ec;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        .bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 165, 165, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(166, 124, 124, 0.15) 0%, transparent 50%),
+                #0d0d12;
+        }
+
+        .particle {
+            position: fixed; font-size: 22px; opacity: 0.15;
+            pointer-events: none; z-index: 0;
+            animation: floatUp 15s infinite ease-in-out;
+        }
+
+        @keyframes floatUp {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.15; }
+            50% { transform: translateY(-80px) rotate(180deg); opacity: 0.3; }
+        }
+
+        header {
+            background: rgba(20, 20, 28, 0.9);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(212, 165, 165, 0.2);
+            padding: 15px 0;
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px; margin: 0 auto; padding: 0 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 15px;
+        }
+
+        .logo {
+            font-size: 24px; font-weight: bold;
+            background: linear-gradient(135deg, #f4c2c2, #d4a5a5);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        nav ul { display: flex; list-style: none; gap: 5px; flex-wrap: wrap; }
+
+        nav a {
+            color: #b8b8c0; text-decoration: none; font-size: 14px;
+            padding: 8px 15px; border-radius: 20px; transition: all 0.3s;
+        }
+
+        nav a:hover { color: #f4c2c2; background: rgba(212, 165, 165, 0.1); }
+
+        .admin-btn {
+            background: rgba(212, 165, 165, 0.15);
+            border: 1px solid rgba(212, 165, 165, 0.4);
+            color: #f4c2c2; padding: 8px 18px; border-radius: 20px;
+            cursor: pointer; font-size: 13px; transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .admin-btn:hover { background: rgba(212, 165, 165, 0.3); }
+
+        .hero {
+            padding: 80px 25px 60px; text-align: center;
+            max-width: 900px; margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block; padding: 8px 20px;
+            background: rgba(212, 165, 165, 0.1);
+            border: 1px solid rgba(212, 165, 165, 0.3);
+            border-radius: 25px; font-size: 13px; color: #f4c2c2;
+            margin-bottom: 25px; animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(212, 165, 165, 0.3); }
+            50% { box-shadow: 0 0 0 10px rgba(212, 165, 165, 0); }
+        }
+
+        .hero h1 {
+            font-size: 46px; font-weight: 800; margin-bottom: 20px; line-height: 1.3;
+            background: linear-gradient(135deg, #ffffff, #f4c2c2);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 18px; color: #a8a8b0; margin-bottom: 35px;
+            max-width: 650px; margin-left: auto; margin-right: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #d4a5a5, #a67c7c);
+            color: white; padding: 16px 40px; border-radius: 30px;
+            text-decoration: none; font-weight: bold; font-size: 17px;
+            transition: all 0.3s; border: none; cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 5px 20px rgba(212, 165, 165, 0.3);
+        }
+
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(212, 165, 165, 0.5); }
+
+        section { padding: 60px 25px; max-width: 1200px; margin: 0 auto; }
+
+        .section-title { text-align: center; font-size: 36px; color: #f4c2c2; margin-bottom: 10px; }
+        .section-subtitle { text-align: center; color: #8b8b95; margin-bottom: 50px; font-size: 16px; }
+
+        .steps-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px; margin-bottom: 40px;
+        }
+
+        .step-card {
+            background: rgba(28, 28, 38, 0.6);
+            border: 1px solid rgba(212, 165, 165, 0.15);
+            border-radius: 20px; padding: 35px 25px; text-align: center;
+            transition: all 0.3s; position: relative;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(212, 165, 165, 0.5);
+            box-shadow: 0 15px 40px rgba(212, 165, 165, 0.15);
+        }
+
+        .step-number {
+            position: absolute; top: 15px; left: 15px;
+            font-size: 50px; font-weight: 800;
+            color: rgba(212, 165, 165, 0.1); line-height: 1;
+        }
+
+        html[dir="rtl"] .step-number { left: auto; right: 15px; }
+
+        .step-icon { font-size: 45px; margin-bottom: 15px; display: block; }
+        .step-title { font-size: 18px; font-weight: bold; color: #e8e8ec; margin-bottom: 10px; }
+        .step-desc { font-size: 14px; color: #8b8b95; line-height: 1.8; }
+
+        /* ===== گالری نمونه کارها ===== */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            background: rgba(28, 28, 38, 0.6);
+            border: 1px solid rgba(212, 165, 165, 0.15);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(212, 165, 165, 0.6);
+            box-shadow: 0 20px 40px rgba(212, 165, 165, 0.25);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(13, 13, 18, 0.95), transparent);
+            padding: 20px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay-text {
+            color: #f4c2c2;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        /* ===== فرم سفارش ===== */
+        .form-container {
+            background: rgba(28, 28, 38, 0.6);
+            border: 1px solid rgba(212, 165, 165, 0.15);
+            border-radius: 20px; padding: 40px;
+            max-width: 700px; margin: 0 auto;
+        }
+
+        .form-group { margin-bottom: 22px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #e8e8ec; font-weight: bold; font-size: 15px; }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 13px 15px;
+            border: 2px solid rgba(212, 165, 165, 0.2);
+            border-radius: 10px; font-family: inherit; font-size: 15px;
+            background: rgba(20, 20, 28, 0.8); color: #e8e8ec;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: #d4a5a5;
+            box-shadow: 0 0 0 3px rgba(212, 165, 165, 0.1);
+        }
+
+        .form-group textarea { resize: vertical; min-height: 90px; }
+
+        .file-upload {
+            border: 2px dashed rgba(212, 165, 165, 0.3);
+            border-radius: 12px; padding: 30px; text-align: center;
+            cursor: pointer; transition: all 0.3s;
+            background: rgba(20, 20, 28, 0.5); position: relative;
+        }
+
+        .file-upload:hover { background: rgba(212, 165, 165, 0.05); border-color: #d4a5a5; }
+        .file-upload input { display: none; }
+        .file-upload-icon { font-size: 40px; margin-bottom: 10px; display: block; }
+        .file-upload-text { color: #a8a8b0; font-size: 14px; }
+
+        .file-preview {
+            max-width: 200px; max-height: 200px; border-radius: 10px;
+            margin-top: 15px; display: none;
+            border: 2px solid rgba(212, 165, 165, 0.3);
+        }
+
+        .submit-btn {
+            width: 100%; background: linear-gradient(135deg, #d4a5a5, #a67c7c);
+            color: white; border: none; padding: 16px; border-radius: 12px;
+            font-size: 18px; font-weight: bold; cursor: pointer;
+            transition: all 0.3s; font-family: inherit; margin-top: 10px;
+        }
+
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(212, 165, 165, 0.4); }
+
+        .contact-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .contact-card {
+            background: rgba(28, 28, 38, 0.6);
+            border: 1px solid rgba(212, 165, 165, 0.15);
+            border-radius: 20px; padding: 30px; text-align: center;
+            transition: all 0.3s;
+        }
+
+        .contact-card:hover { transform: translateY(-5px); border-color: rgba(212, 165, 165, 0.5); }
+        .contact-icon { font-size: 45px; margin-bottom: 15px; }
+        .contact-card h3 { color: #f4c2c2; margin-bottom: 10px; font-size: 18px; }
+        .contact-card a { color: #a8a8b0; text-decoration: none; font-size: 15px; transition: color 0.3s; word-break: break-all; }
+        .contact-card a:hover { color: #f4c2c2; }
+
+        footer {
+            background: rgba(15, 15, 20, 0.9);
+            border-top: 1px solid rgba(212, 165, 165, 0.1);
+            text-align: center; padding: 30px 20px; margin-top: 60px;
+        }
+
+        footer p { color: #8b8b95; font-size: 14px; }
+
+        /* ===== مودال ===== */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9);
+            z-index: 1000; overflow-y: auto; padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+
+        .modal-content {
+            background: #1c1c26;
+            border: 1px solid rgba(212, 165, 165, 0.2);
+            border-radius: 20px; padding: 35px;
+            max-width: 550px; width: 100%; position: relative;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute; top: 15px; left: 15px;
+            background: rgba(212, 165, 165, 0.15); border: none;
+            width: 35px; height: 35px; border-radius: 50%;
+            cursor: pointer; font-size: 18px; color: #f4c2c2;
+            transition: all 0.3s;
+        }
+
+        html[dir="rtl"] .close-modal { left: auto; right: 15px; }
+        .close-modal:hover { background: #d4a5a5; color: white; }
+
+        /* ===== نمایش عکس بزرگ ===== */
+        .image-viewer {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .image-viewer.active { display: flex; }
+
+        .image-viewer img {
+            max-width: 95%;
+            max-height: 95%;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .image-viewer-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 22px;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .image-viewer-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        /* ===== پنل مدیریت ===== */
+        .modal-title {
+            text-align: center; color: #f4c2c2; font-size: 22px;
+            margin-bottom: 20px; padding-bottom: 15px;
+            border-bottom: 1px solid rgba(212, 165, 165, 0.15);
+        }
+
+        .modal-icon { text-align: center; font-size: 60px; margin-bottom: 15px; }
+
+        .login-box { max-width: 400px; margin: 0 auto; text-align: center; }
+
+        .login-box input {
+            width: 100%; padding: 15px;
+            border: 2px solid rgba(212, 165, 165, 0.2);
+            border-radius: 12px; font-size: 20px;
+            text-align: center; letter-spacing: 8px;
+            background: rgba(20, 20, 28, 0.8); color: #f4c2c2;
+            margin-bottom: 15px; font-family: inherit;
+        }
+
+        .login-box input:focus { outline: none; border-color: #d4a5a5; }
+
+        .login-btn {
+            width: 100%; background: linear-gradient(135deg, #d4a5a5, #a67c7c);
+            color: white; border: none; padding: 15px;
+            border-radius: 12px; font-size: 17px; font-weight: bold;
+            cursor: pointer; font-family: inherit;
+        }
+
+        .order-item {
+            background: rgba(28, 28, 38, 0.8);
+            border: 1px solid rgba(212, 165, 165, 0.15);
+            border-radius: 15px; padding: 20px; margin-bottom: 15px;
+        }
+
+        .order-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; flex-wrap: wrap; gap: 10px;
+        }
+
+        .order-id { font-weight: bold; color: #f4c2c2; font-size: 16px; }
+
+        .order-status {
+            padding: 5px 15px; border-radius: 15px;
+            font-size: 12px; font-weight: bold;
+        }
+
+        .status-pending { background: #4a3d1a; color: #ffc107; }
+        .status-payment { background: #1a3a4a; color: #00d9ff; }
+        .status-final { background: #1a4a2a; color: #10b981; }
+
+        .order-details {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px; margin-bottom: 15px; font-size: 13px;
+        }
+
+        .order-detail strong { color: #f4c2c2; }
+
+        .order-cake-image {
+            max-width: 150px; border-radius: 10px; margin: 10px 0;
+            border: 2px solid rgba(212, 165, 165, 0.2);
+            cursor: pointer;
+        }
+
+        .order-actions {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 8px 18px; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 13px; font-family: inherit;
+            transition: all 0.3s; font-weight: bold;
+        }
+
+        .btn-payment { background: #ffc107; color: #333; }
+        .btn-final { background: #10b981; color: white; }
+        .btn-delete { background: #ef4444; color: white; }
+        .action-btn:hover { opacity: 0.85; transform: translateY(-2px); }
+
+        /* ===== چت ===== */
+        .chat-box {
+            background: rgba(20, 20, 28, 0.8);
+            border: 1px solid rgba(212, 165, 165, 0.15);
+            border-radius: 12px; padding: 15px;
+            max-height: 300px; overflow-y: auto; margin: 15px 0;
+        }
+
+        .chat-msg {
+            padding: 10px 15px; border-radius: 12px;
+            margin-bottom: 10px; font-size: 14px;
+            max-width: 80%; word-wrap: break-word;
+        }
+
+        .chat-msg.admin {
+            background: linear-gradient(135deg, #d4a5a5, #a67c7c);
+            color: white; margin-right: auto; margin-left: 0; text-align: right;
+        }
+
+        .chat-msg.customer {
+            background: rgba(212, 165, 165, 0.15);
+            color: #e8e8ec; margin-left: auto; margin-right: 0; text-align: right;
+        }
+
+        .chat-input-box { display: flex; gap: 8px; }
+
+        .chat-input-box input {
+            flex: 1; padding: 12px;
+            border: 2px solid rgba(212, 165, 165, 0.2);
+            border-radius: 10px; background: rgba(20, 20, 28, 0.8);
+            color: #e8e8ec; font-family: inherit; font-size: 14px;
+        }
+
+        .chat-input-box button {
+            background: linear-gradient(135deg, #d4a5a5, #a67c7c);
+            color: white; border: none; padding: 0 25px;
+            border-radius: 10px; cursor: pointer;
+            font-family: inherit; font-weight: bold;
+        }
+
+        /* ===== اینستاگرام پرداخت ===== */
+        .instagram-payment {
+            background: rgba(212, 165, 165, 0.08);
+            border: 2px solid rgba(212, 165, 165, 0.3);
+            border-radius: 15px; padding: 25px; text-align: center; margin: 20px 0;
+        }
+
+        .instagram-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+            color: white; text-decoration: none;
+            padding: 15px 35px; border-radius: 30px;
+            font-weight: bold; font-size: 16px;
+            transition: all 0.3s; margin: 15px 0;
+        }
+
+        .instagram-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 30px rgba(253, 29, 29, 0.4); }
+
+        /* ===== نوتیفیکیشن ===== */
+        .notification {
+            position: fixed; top: 20px; right: 20px;
+            background: #10b981; color: white;
+            padding: 15px 25px; border-radius: 12px;
+            z-index: 2000; font-size: 14px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.4);
+            display: none; max-width: 350px;
+        }
+
+        .notification.show { display: block; animation: slideInNotif 0.3s ease-out; }
+        .notification.error { background: #ef4444; }
+        .notification.info { background: #00d9ff; color: #0d0d12; }
+
+        @keyframes slideInNotif {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 30px; }
+            .hero p { font-size: 15px; }
+            .section-title { font-size: 26px; }
+            .logo { font-size: 18px; }
+            nav a { font-size: 12px; padding: 6px 10px; }
+            .form-container { padding: 25px; }
+            .modal-content { padding: 25px; }
+            .admin-btn { font-size: 11px; padding: 6px 12px; }
+            .gallery-item img { height: 250px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg"></div>
+    <div class="notification" id="notification"></div>
+
+    <!-- ===== نمایش عکس بزرگ ===== -->
+    <div class="image-viewer" id="imageViewer" onclick="closeImageViewer()">
+        <button class="image-viewer-close" onclick="closeImageViewer()">✕</button>
+        <img id="viewerImage" src="" alt="">
+    </div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo">🍰 مرسیا سوئیتس</div>
+            <nav>
+                <ul>
+                    <li><a href="#home">خانه</a></li>
+                    <li><a href="#gallery">نمونه کارها</a></li>
+                    <li><a href="#order">سفارش</a></li>
+                    <li><a href="#track">پیگیری</a></li>
+                    <li><a href="#contact">تماس</a></li>
+                </ul>
+            </nav>
+            <button class="admin-btn" onclick="openAdmin()">🔐 مدیریت</button>
+        </div>
+    </header>
+
+    <!-- ===== هیرو ===== -->
+    <div class="hero" id="home">
+        <div class="hero-badge">✨ کیک خانگی با عشق</div>
+        <h1>کیک خاصِ جشن شما، همونطور که تصورش می‌کنید</h1>
+        <p>عکس یا توضیح طرح دلخواهتان را بفرستید؛ ما جزئیات را بررسی می‌کنیم و برآورد قیمت را برایتان می‌فرستیم.</p>
+        <a href="#order" class="btn">🎂 از همین‌جا شروع کنید</a>
+    </div>
+
+    <!-- ===== ۳ قدم ===== -->
+    <section>
+        <h2 class="section-title">سفارش در ۳ قدم</h2>
+        <p class="section-subtitle">ساده و شفاف</p>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <span class="step-number">۰۱</span>
+                <span class="step-icon">📤</span>
+                <div class="step-title">طرح را بفرستید</div>
+                <div class="step-desc">توضیح بدهید چه کیکی دوست دارید و عکس مرجع را اضافه کنید.</div>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">۰۲</span>
+                <span class="step-icon">💰</span>
+                <div class="step-title">قیمت را ببینید</div>
+                <div class="step-desc">پس از بررسی، برآورد قیمت در بخش پیگیری سفارش دیده می‌شود.</div>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">۰۳</span>
+                <span class="step-icon">✅</span>
+                <div class="step-title">پرداخت و نهایی‌سازی</div>
+                <div class="step-desc">مبلغ را به دایرکت اینستاگرام ما بفرستید و رسید را ارسال کنید.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== گالری نمونه کارها ===== -->
+    <section id="gallery">
+        <h2 class="section-title">🎂 نمونه کارهای ما</h2>
+        <p class="section-subtitle">چند نمونه از کیک‌های سفارشی که برای مشتریان عزیز آماده کرده‌ایم</p>
+
+        <div class="gallery-grid">
+            <div class="gallery-item" onclick="viewImage('IMG_1.jpg.webp')">
+                <img src="IMG_1.jpg.webp" alt="نمونه کار ۱">
+                <div class="gallery-overlay">
+                    <div class="gallery-overlay-text">👆 برای دیدن بزرگتر کلیک کن</div>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="viewImage('IMG_2.jpg.webp')">
+                <img src="IMG_2.jpg.webp" alt="نمونه کار ۲">
+                <div class="gallery-overlay">
+                    <div class="gallery-overlay-text">👆 برای دیدن بزرگتر کلیک کن</div>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="viewImage('IMG_3.jpg.webp')">
+                <img src="IMG_3.jpg.webp" alt="نمونه کار ۳">
+                <div class="gallery-overlay">
+                    <div class="gallery-overlay-text">👆 برای دیدن بزرگتر کلیک کن</div>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="viewImage('IMG_4.jpg.webp')">
+                <img src="IMG_4.jpg.webp" alt="نمونه کار ۴">
+                <div class="gallery-overlay">
+                    <div class="gallery-overlay-text">👆 برای دیدن بزرگتر کلیک کن</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== فرم سفارش ===== -->
+    <section id="order">
+        <h2 class="section-title">📝 ثبت سفارش</h2>
+        <p class="section-subtitle">اطلاعاتت رو پر کن و طرح کیک رو بفرست</p>
+
+        <div class="form-container">
+            <div class="form-group">
+                <label>نام و نام خانوادگی *</label>
+                <input type="text" id="orderName" placeholder="مثلاً: علی محمدی" required>
+            </div>
+
+            <div class="form-group">
+                <label>شماره تماس *</label>
+                <input type="tel" id="orderPhone" placeholder="۰۹۱۲۳۴۵۶۷۸۹" required>
+            </div>
+
+            <div class="form-group">
+                <label>آدرس دقیق *</label>
+                <textarea id="orderAddress" placeholder="استان، شهر، خیابان، کوچه، پلاک، واحد" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>توضیح کیک مورد نظرت *</label>
+                <textarea id="orderCakeDesc" placeholder="مثلاً: کیک تولد دوطبقه با گل‌های صورتی، روی کیک بنویس «تولدت مبارک»..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>عکس کیک مورد نظرت</label>
+                <label class="file-upload" for="orderImage">
+                    <span class="file-upload-icon">📸</span>
+                    <span class="file-upload-text" id="fileName">برای انتخاب عکس کلیک کن</span>
+                    <input type="file" id="orderImage" accept="image/*" onchange="previewImage(this)">
+                </label>
+                <img id="imagePreview" class="file-preview" alt="پیش‌نمایش">
+            </div>
+
+            <div class="form-group">
+                <label>محتویات داخل کیک *</label>
+                <textarea id="orderFilling" placeholder="مثلاً: خامه شکلاتی، گردو، موز، توت‌فرنگی..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>توضیحات اضافی</label>
+                <textarea id="orderNotes" placeholder="مثلاً: رنگ خاص، اندازه خاص و..."></textarea>
+            </div>
+
+            <button class="submit-btn" onclick="submitOrder()">🎂 ثبت سفارش</button>
+        </div>
+    </section>
+
+    <!-- ===== پیگیری سفارش ===== -->
+    <section id="track">
+        <h2 class="section-title">🔍 پیگیری سفارش</h2>
+        <p class="section-subtitle">کد رهگیری رو وارد کن</p>
+
+        <div class="form-container">
+            <div class="form-group">
+                <label>کد رهگیری *</label>
+                <input type="text" id="trackCode" placeholder="مثلاً: 1234" style="text-align: center; font-size: 20px; letter-spacing: 5px;">
+            </div>
+            <button class="submit-btn" onclick="trackOrder()">🔍 پیگیری</button>
+            <div id="trackResult" style="margin-top: 25px;"></div>
+        </div>
+    </section>
+
+    <!-- ===== تماس ===== -->
+    <section id="contact">
+        <h2 class="section-title">📞 تماس با ما</h2>
+        <p class="section-subtitle">ما همیشه آماده‌ایم کمکت کنیم</p>
+
+        <div class="contact-grid">
+            <div class="contact-card">
+                <div class="contact-icon">📷</div>
+                <h3>اینستاگرام</h3>
+                <a href="https://www.instagram.com/mercia_sweets" target="_blank">@mercia_sweets</a>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-icon">⏰</div>
+                <h3>ساعات کاری</h3>
+                <p style="color: #a8a8b0;">هر روز ۹ صبح تا ۱۰ شب</p>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-icon">💬</div>
+                <h3>پاسخگویی</h3>
+                <p style="color: #a8a8b0;">حداکثر تا ۲ ساعت</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>🍰 مرسیا سوئیتس</p>
+        <p style="margin-top: 5px;">با عشق برای شما پخته میشه ❤️</p>
+    </footer>
+
+    <!-- ===== مودال پرداخت ===== -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('paymentModal')">✕</button>
+            <div class="modal-icon">💳</div>
+            <h2 class="modal-title">پرداخت و نهایی‌سازی</h2>
+            
+            <p style="color: #a8a8b0; text-align: center; margin-bottom: 20px;">
+                مبلغ سفارش شما: <b id="paymentAmount" style="color: #f4c2c2; font-size: 20px;">---</b> تومان
+            </p>
+
+            <div class="instagram-payment">
+                <p style="color: #e8e8ec; margin-bottom: 15px; font-size: 15px;">
+                    📩 لطفاً برای پرداخت، به دایرکت اینستاگرام ما پیام بدهید:
+                </p>
+                
+                <a href="https://www.instagram.com/mercia_sweets" target="_blank" class="instagram-btn">
+                    <span>📷</span>
+                    <span>دایرکت اینستاگرام</span>
+                </a>
+                
+                <p style="color: #a8a8b0; font-size: 13px; margin-top: 15px;">
+                    در دایرکت، مبلغ سفارش و اطلاعات کارت برای شما ارسال می‌شود.
+                </p>
+            </div>
+
+            <p style="color: #a8a8b0; text-align: center; font-size: 14px; margin: 20px 0;">
+                📸 بعد از پرداخت، عکس رسید را در دایرکت اینستاگرام ارسال کنید.
+            </p>
+
+            <button class="submit-btn" onclick="closeModal('paymentModal')">متوجه شدم</button>
+        </div>
+    </div>
+
+    <!-- ===== مودال پنل مدیریت ===== -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <button class="close-modal" onclick="closeModal('adminModal')">✕</button>
+            
+            <div id="loginSection">
+                <div class="modal-icon">🔐</div>
+                <h2 class="modal-title">ورود به پنل مدیریت</h2>
+                <div class="login-box">
+                    <p style="color: #a8a8b0; margin-bottom: 15px;">کد امنیتی رو وارد کن:</p>
+                    <input type="password" id="adminCode" maxlength="15" placeholder="● ● ● ● ● ●">
+                    <button class="login-btn" onclick="loginAdmin()">ورود</button>
+                </div>
+            </div>
+
+            <div id="ordersSection" style="display: none;">
+                <div class="modal-icon">📋</div>
+                <h2 class="modal-title">مدیریت سفارش‌ها</h2>
+                <div id="ordersList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== تنظیمات ==========
+        const ADMIN_CODE = "am22445870";
+        const INSTAGRAM_URL = "https://www.instagram.com/mercia_sweets";
+
+        let orders = JSON.parse(localStorage.getItem('mercia_orders') || '[]');
+
+        function saveOrders() {
+            localStorage.setItem('mercia_orders', JSON.stringify(orders));
+        }
+
+        // ========== نوتیفیکیشن ==========
+        function showNotif(msg, type = 'success') {
+            const n = document.getElementById('notification');
+            n.textContent = msg;
+            n.className = 'notification show ' + (type === 'error' ? 'error' : type === 'info' ? 'info' : '');
+            setTimeout(() => n.classList.remove('show'), 3500);
+        }
+
+        // ========== نمایش عکس بزرگ ==========
+        function viewImage(src) {
+            document.getElementById('viewerImage').src = src;
+            document.getElementById('imageViewer').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageViewer() {
+            document.getElementById('imageViewer').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ========== پیش‌نمایش عکس ==========
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            const fileName = document.getElementById('fileName');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    fileName.textContent = '✅ ' + input.files[0].name;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // ========== ثبت سفارش ==========
+        function submitOrder() {
+            const name = document.getElementById('orderName').value.trim();
+            const phone = document.getElementById('orderPhone').value.trim();
+            const address = document.getElementById('orderAddress').value.trim();
+            const cakeDesc = document.getElementById('orderCakeDesc').value.trim();
+            const filling = document.getElementById('orderFilling').value.trim();
+            const notes = document.getElementById('orderNotes').value.trim();
+            const imageInput = document.getElementById('orderImage');
+
+            if (!name || !phone || !address || !cakeDesc || !filling) {
+                showNotif('❌ لطفاً همه فیلدهای اجباری رو پر کن!', 'error');
+                return;
+            }
+
+            const process = (imageData) => {
+                const order = {
+                    id: Date.now(),
+                    code: String(Math.floor(1000 + Math.random() * 9000)),
+                    name: name,
+                    phone: phone,
+                    address: address,
+                    cakeDesc: cakeDesc,
+                    filling: filling,
+                    notes: notes,
+                    image: imageData,
+                    status: 'pending',
+                    price: '',
+                    receipt: null,
+                    messages: [],
+                    createdAt: new Date().toLocaleString('fa-IR')
+                };
+
+                orders.push(order);
+                saveOrders();
+
+                showNotif('✅ سفارش ثبت شد! کد رهگیری: ' + order.code, 'info');
+                
+                document.getElementById('orderName').value = '';
+                document.getElementById('orderPhone').value = '';
+                document.getElementById('orderAddress').value = '';
+                document.getElementById('orderCakeDesc').value = '';
+                document.getElementById('orderFilling').value = '';
+                document.getElementById('orderNotes').value = '';
+                document.getElementById('orderImage').value = '';
+                document.getElementById('imagePreview').style.display = 'none';
+                document.getElementById('fileName').textContent = 'برای انتخاب عکس کلیک کن';
+
+                setTimeout(() => {
+                    alert('✅ سفارش شما با موفقیت ثبت شد!\n\n📋 کد رهگیری: ' + order.code + '\n\nاین کد را برای پیگیری سفارش نگه دارید.');
+                }, 500);
+            };
+
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => process(e.target.result);
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                process(null);
+            }
+        }
+
+        // ========== پیگیری سفارش ==========
+        function trackOrder() {
+            const code = document.getElementById('trackCode').value.trim();
+            const resultDiv = document.getElementById('trackResult');
+
+            if (!code) {
+                showNotif('❌ کد رهگیری رو وارد کن!', 'error');
+                return;
+            }
+
+            const order = orders.find(o => o.code === code);
+
+            if (!order) {
+                resultDiv.innerHTML = '<div style="text-align: center; color: #ef4444; padding: 20px;">❌ سفارشی با این کد پیدا نشد!</div>';
+                return;
+            }
+
+            const statusText = order.status === 'pending' ? '⏳ در انتظار بررسی' :
+                               order.status === 'payment' ? '💳 در حال پرداخت' : '✅ نهایی شده';
+            const statusClass = order.status === 'pending' ? 'status-pending' :
+                                order.status === 'payment' ? 'status-payment' : 'status-final';
+
+            let html = `
+                <div class="order-item">
+                    <div class="order-header">
+                        <div class="order-id">سفارش #${order.code}</div>
+                        <div class="order-status ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="order-details">
+                        <div class="order-detail"><strong>👤 نام:</strong> ${order.name}</div>
+                        <div class="order-detail"><strong>🎂 کیک:</strong> ${order.cakeDesc}</div>
+                        <div class="order-detail"><strong>📅 تاریخ:</strong> ${order.createdAt}</div>
+                        ${order.price ? `<div class="order-detail"><strong>💰 قیمت:</strong> <span style="color: #f4c2c2; font-size: 16px;">${order.price} تومان</span></div>` : ''}
+                    </div>
+                    ${order.image ? `<img src="${order.image}" class="order-cake-image" alt="کیک" onclick="viewImage(this.src)">` : ''}
+            `;
+
+            if (order.price && order.status === 'pending') {
+                html += `
+                    <div style="text-align: center; margin: 20px 0;">
+                        <button class="submit-btn" onclick="showPayment('${order.code}')">💳 پرداخت</button>
+                    </div>
+                `;
+            }
+
+            if (order.status === 'payment' && !order.receipt) {
+                html += `
+                    <div style="text-align: center; margin: 20px 0;">
+                        <p style="color: #f4c2c2; margin-bottom: 15px;">📸 عکس رسید پرداخت رو آپلود کن:</p>
+                        <label class="file-upload" for="receiptUpload_${order.code}">
+                            <span class="file-upload-icon">📸</span>
+                            <span class="file-upload-text" id="receiptFileName_${order.code}">برای انتخاب عکس کلیک کن</span>
+                            <input type="file" id="receiptUpload_${order.code}" accept="image/*" onchange="uploadReceipt('${order.code}', this)">
+                        </label>
+                    </div>
+                `;
+            }
+
+            if (order.receipt) {
+                html += `
+                    <div style="text-align: center; margin: 15px 0;">
+                        <p style="color: #10b981;">✅ رسید شما آپلود شده و در حال بررسی است.</p>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(212,165,165,0.15);">
+                    <h4 style="color: #f4c2c2; margin-bottom: 15px;">💬 چت با قناد</h4>
+                    <div class="chat-box" id="chatBox_${order.code}">
+            `;
+
+            if (order.messages.length === 0) {
+                html += '<div style="text-align: center; color: #8b8b95; font-size: 13px; padding: 20px;">هنوز پیامی رد و بدل نشده</div>';
+            } else {
+                order.messages.forEach(m => {
+                    html += `<div class="chat-msg ${m.from}">${m.text}<br><small style="opacity: 0.6; font-size: 10px;">${m.time}</small></div>`;
+                });
+            }
+
+            html += `
+                    </div>
+                    <div class="chat-input-box">
+                        <input type="text" id="chatInput_${order.code}" placeholder="پیامت رو بنویس...">
+                        <button onclick="sendMessage('${order.code}')">📤</button>
+                    </div>
+                </div>
+                </div>
+            `;
+
+            resultDiv.innerHTML = html;
+
+            const chatBox = document.getElementById('chatBox_' + order.code);
+            if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showPayment(code) {
+            const order = orders.find(o => o.code === code);
+            if (!order) return;
+            document.getElementById('paymentAmount').textContent = order.price;
+            openModal('paymentModal');
+        }
+
+        function uploadReceipt(code, input) {
+            if (!input.files || !input.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const order = orders.find(o => o.code === code);
+                if (order) {
+                    order.receipt = e.target.result;
+                    saveOrders();
+                    showNotif('✅ رسید آپلود شد!', 'info');
+                    trackOrder();
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        function sendMessage(code) {
+            const input = document.getElementById('chatInput_' + code);
+            const text = input.value.trim();
+            if (!text) return;
+
+            const order = orders.find(o => o.code === code);
+            if (!order) return;
+
+            order.messages.push({
+                from: 'customer',
+                text: text,
+                time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })
+            });
+            saveOrders();
+            input.value = '';
+            trackOrder();
+        }
+
+        function openAdmin() {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('ordersSection').style.display = 'none';
+            document.getElementById('adminCode').value = '';
+            openModal('adminModal');
+        }
+
+        function loginAdmin() {
+            const code = document.getElementById('adminCode').value;
+            if (code === ADMIN_CODE) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('ordersSection').style.display = 'block';
+                loadOrders();
+            } else {
+                showNotif('❌ کد اشتباهه!', 'error');
+            }
+        }
+
+        function loadOrders() {
+            const list = document.getElementById('ordersList');
+            
+            if (orders.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #8b8b95; padding: 40px; font-size: 16px;">📭 هنوز سفارشی ثبت نشده!</div>';
+                return;
+            }
+
+            const sorted = [...orders].sort((a, b) => b.id - a.id);
+            let html = '';
+
+            sorted.forEach(order => {
+                const statusText = order.status === 'pending' ? '⏳ در انتظار' :
+                                   order.status === 'payment' ? '💳 در حال پرداخت' : '✅ نهایی';
+                const statusClass = order.status === 'pending' ? 'status-pending' :
+                                    order.status === 'payment' ? 'status-payment' : 'status-final';
+
+                html += `
+                    <div class="order-item">
+                        <div class="order-header">
+                            <div class="order-id">سفارش #${order.code}</div>
+                            <div class="order-status ${statusClass}">${statusText}</div>
+                        </div>
+                        
+                        <div class="order-details">
+                            <div class="order-detail"><strong>👤 نام:</strong> ${order.name}</div>
+                            <div class="order-detail"><strong>📞 تلفن:</strong> <a href="tel:${order.phone}" style="color: #f4c2c2;">${order.phone}</a></div>
+                            <div class="order-detail"><strong>📍 آدرس:</strong> ${order.address}</div>
+                            <div class="order-detail"><strong>🎂 توضیح کیک:</strong> ${order.cakeDesc}</div>
+                            <div class="order-detail"><strong>🍫 محتویات:</strong> ${order.filling}</div>
+                            <div class="order-detail"><strong>📝 توضیحات:</strong> ${order.notes || 'ندارد'}</div>
+                            <div class="order-detail"><strong>🕐 زمان:</strong> ${order.createdAt}</div>
+                        </div>
+                        
+                        ${order.image ? `<img src="${order.image}" class="order-cake-image" onclick="viewImage(this.src)">` : ''}
+                        ${order.receipt ? `<div style="margin-top: 10px;"><strong style="color: #10b981;">📸 رسید:</strong><br><img src="${order.receipt}" class="order-cake-image" onclick="viewImage(this.src)"></div>` : ''}
+                        
+                        <div style="margin-top: 15px; display: flex; gap: 8px;">
+                            <input type="number" id="price_${order.code}" placeholder="قیمت به تومان" value="${order.price || ''}" style="flex: 1; padding: 10px; border: 2px solid rgba(212,165,165,0.2); border-radius: 8px; background: rgba(20,20,28,0.8); color: #e8e8ec; font-family: inherit;">
+                            <button class="action-btn btn-payment" onclick="setPrice('${order.code}')">💰 ثبت قیمت</button>
+                        </div>
+                        
+                        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(212,165,165,0.15);">
+                            <h4 style="color: #f4c2c2; margin-bottom: 10px; font-size: 14px;">💬 چت با مشتری</h4>
+                            <div class="chat-box" style="max-height: 150px;">
+                `;
+
+                if (order.messages.length === 0) {
+                    html += '<div style="text-align: center; color: #8b8b95; font-size: 12px; padding: 15px;">هنوز پیامی نیست</div>';
+                } else {
+                    order.messages.forEach(m => {
+                        html += `<div class="chat-msg ${m.from}">${m.text}<br><small style="opacity: 0.6; font-size: 10px;">${m.time}</small></div>`;
+                    });
+                }
+
+                html += `
+                            </div>
+                            <div class="chat-input-box" style="margin-top: 10px;">
+                                <input type="text" id="adminChatInput_${order.code}" placeholder="پاسخ به مشتری...">
+                                <button onclick="sendAdminMsg('${order.code}')">📤</button>
+                            </div>
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button class="action-btn btn-payment" onclick="setStatus('${order.code}', 'payment')">💳 در حال پرداخت</button>
+                            <button class="action-btn btn-final" onclick="setStatus('${order.code}', 'final')">✅ نهایی کردن</button>
+                            <button class="action-btn btn-delete" onclick="deleteOrder('${order.code}')">🗑 حذف</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+        }
+
+        function setPrice(code) {
+            const input = document.getElementById('price_' + code);
+            const price = input.value.trim();
+            if (!price) {
+                showNotif('❌ قیمت رو وارد کن!', 'error');
+                return;
+            }
+            
+            const order = orders.find(o => o.code === code);
+            if (order) {
+                order.price = price;
+                saveOrders();
+                showNotif('✅ قیمت ثبت شد: ' + price + ' تومان', 'info');
+                loadOrders();
+            }
+        }
+
+        function setStatus(code, status) {
+            const order = orders.find(o => o.code === code);
+            if (order) {
+                order.status = status;
+                saveOrders();
+                showNotif('✅ وضعیت تغییر کرد!', 'info');
+                loadOrders();
+            }
+        }
+
+        function deleteOrder(code) {
+            if (!confirm('مطمئنی می‌خوای این سفارش رو حذف کنی؟')) return;
+            orders = orders.filter(o => o.code !== code);
+            saveOrders();
+            loadOrders();
+            showNotif('🗑 سفارش حذف شد!', 'info');
+        }
+
+        function sendAdminMsg(code) {
+            const input = document.getElementById('adminChatInput_' + code);
+            const text = input.value.trim();
+            if (!text) return;
+
+            const order = orders.find(o => o.code === code);
+            if (!order) return;
+
+            order.messages.push({
+                from: 'admin',
+                text: text,
+                time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })
+            });
+            saveOrders();
+            input.value = '';
+            loadOrders();
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // ========== ذرات شناور ==========
+        const emojis = ['🍰', '🎂', '🧁', '🍩', '🍪', '💝', '✨', '🌸'];
+        function createParticle() {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            p.style.left = Math.random() * 100 + '%';
+            p.style.top = Math.random() * 100 + '%';
+            p.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            p.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 20000);
+        }
+
+        for (let i = 0; i < 8; i++) {
+            setTimeout(createParticle, i * 500);
+        }
+        setInterval(createParticle, 3000);
+    </script>
+
+</body>
+</html>
